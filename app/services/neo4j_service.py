@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 
 # Load environment variables (.env locally, Render uses dashboard variables)
-load_dotenv()
+load_dotenv(override=False)
 
 URI = os.getenv("NEO4J_URI")
 USER = os.getenv("NEO4J_USER")
