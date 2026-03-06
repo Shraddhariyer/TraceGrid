@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TraceGrid Report</title>
+
+    <style>
+        body {
+            background: #0f0f0f;
+            color: white;
+            font-family: Arial;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: #1c1c1c;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+        }
+
+        .risk-high { color: red; font-weight: bold; }
+        .risk-mid { color: orange; font-weight: bold; }
+        .risk-low { color: #00ff99; font-weight: bold; }
+
+        .section-title {
+            margin-bottom: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .legend span {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        .dot {
+            height: 12px;
+            width: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+        }
+
+        iframe {
+            width: 100%;
+            height: 700px;
+            border: none;
+            border-radius: 10px;
+        }
+
+        .note {
+            color: #bbb;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>🔍 TraceGrid Intelligence Report</h1>
+
+<!-- 🔴 DOMAIN INFO -->
+<div class="card">
+    <div class="section-title">Domain Overview</div>
+
+    <h2>{{ domain }}</h2>
+
+    <p><b>Risk Score:</b>
+        <span class="{% if risk_score > 60 %}risk-high{% elif risk_score > 30 %}risk-mid{% else %}risk-low{% endif %}">
+            {{ risk_score }}/100
+        </span>
+    </p>
+
+    <p><b>Interpretation:</b>
+        {% if risk_score > 60 %}
+            ⚠️ High Risk — Strong indicators of malicious or fraudulent infrastructure
+        {% elif risk_score > 30 %}
+            ⚠️ Medium Risk — Needs further investigation
+        {% else %}
+            ✅ Low Risk — No strong suspicious signals detected
+        {% endif %}
+    </p>
+
+    <p><b>Reasons:</b></p>
+    <ul>
+        {% for r in reasons %}
+        <li>{{ r }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<!-- 🧠 INSIGHTS -->
+<div class="card">
+    <div class="section-title">🧠 Analysis & Insights</div>
+
+    <ul>
+        {% for insight in insights %}
+        <li>{{ insight }}</li>
+        {% endfor %}
+    </ul>
+
+    <p class="note">
+        These insights are automatically generated based on detected infrastructure patterns.
+    </p>
+</div>
+
+<!-- 🏗 INFRASTRUCTURE -->
+<div class="card">
+    <div class="section-title">Infrastructure Summary</div>
+
+    <p><b>IP Addresses:</b> {{ ip_count }}</p>
+    <p class="note">Multiple IPs may indicate load balancing OR distributed hosting.</p>
+
+    <p><b>NameServers:</b> {{ ns_count }}</p>
+    <p class="note">Used to manage domain DNS configuration.</p>
+
+    <p><b>SSL Related Domains:</b> {{ ssl_count }}</p>
+    <p class="note">Shared SSL certificates can indicate shared infrastructure.</p>
+
+    <p><b>Cluster Size:</b> {{ cluster_size }}</p>
+    <p class="note">Higher cluster size suggests infrastructure reuse (common in fraud networks).</p>
+</div>
+
+<!-- 🕒 TIMELINE -->
+<div class="card">
+    <div class="section-title">Timeline Analysis</div>
+
+    <p><b>First Seen:</b> {{ first_seen }}</p>
+    <p><b>Last Seen:</b> {{ last_seen }}</p>
+
+    <p class="note">
+        Timeline helps identify domain age and activity patterns.
+    </p>
+</div>
+
+<!-- 🎨 LEGEND -->
+<div class="card legend">
+    <div class="section-title">Graph Legend</div>
+
+    <p><span><span class="dot" style="background:red;"></span>High Risk Domain</span></p>
+    <p><span><span class="dot" style="background:orange;"></span>Medium Risk Domain</span></p>
+    <p><span><span class="dot" style="background:#00ff99;"></span>Low Risk Domain</span></p>
+
+    <p><span><span class="dot" style="background:#00ccff;"></span>IP Address (Hosting Server)</span></p>
+    <p><span><span class="dot" style="background:#aa66ff;"></span>NameServer / Subdomain</span></p>
+</div>
+
+<!-- 📊 GRAPH -->
+<div class="card">
+    <div class="section-title">Network Graph</div>
+
+    <iframe src="/graph-file?domain={{ domain }}"></iframe>
+
+    <p class="note">
+        This graph shows how the domain connects to infrastructure such as IPs, name servers, and related domains.
+    </p>
+</div>
+
+</body>
+</html>
