@@ -10,13 +10,17 @@ from app.collectors.ns_collector import get_nameservers
 from app.collectors.wayback_collector import get_wayback_data
 from app.services.risk_engine import calculate_risk
 from app.services.visualizer import generate_graph
+from fastapi.templating import Jinja2Templates
+from fastapi import Request
 
 app = FastAPI()
 
+templates = Jinja2Templates(directory="templates")
 
-@app.get("/")
-def home():
-    return {"message": "TraceGrid is running"}
+
+@app.get("/", response_class=HTMLResponse)
+def home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 
 # ===============================
